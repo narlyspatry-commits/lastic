@@ -1,0 +1,614 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101b39">
+<title>Exploradores del Sistema Solar | Grado 5°</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c1530;--panel:#172449;--panel2:#22345e;
+  --text:#f6f8ff;--muted:#c3d0ec;--accent:#65e4ce;
+  --yellow:#ffd477;--blue:#91b9ff;--red:#ff9ca7;
+  --radius:20px
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+button{font:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--yellow);outline-offset:4px}
+button:disabled{opacity:.48;cursor:not-allowed}
+header{padding:18px 5%;background:#111e40;border-bottom:1px solid #34466f;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:900;font-size:1.2rem}
+.brand span{color:var(--accent)}
+.small{font-size:.87rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:calc(100vh - 78px)}
+aside{background:#111e40;padding:25px 15px;border-right:1px solid #34466f}
+aside h2{font-size:1rem;margin:0 10px 20px}
+.navbtn{width:100%;border:0;border-radius:13px;background:transparent;color:var(--muted);padding:14px;text-align:left;margin:5px 0;font-weight:800}
+.navbtn.active{background:#29476a;color:var(--accent)}
+.navbtn:hover{background:#26365a}
+main{padding:30px;max-width:1120px;width:100%;margin:auto}
+section{display:none;animation:appear .3s ease}
+section.active{display:block}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:clamp(1.8rem,4vw,3rem);line-height:1.2;margin:10px 0}
+h2{font-size:1.55rem;line-height:1.3}
+h3{margin:8px 0}
+p{color:var(--muted)}
+.eyebrow{color:var(--accent);font-weight:900;letter-spacing:.09em;text-transform:uppercase;font-size:.8rem}
+.card{background:var(--panel);border:1px solid #35486f;border-radius:var(--radius);padding:24px;margin:18px 0}
+.btn{border:0;border-radius:13px;background:var(--accent);color:#09233a;padding:12px 20px;font-weight:900;margin:5px 5px 5px 0}
+.btn.secondary{background:#30466f;color:white}
+.btn.warning{background:var(--yellow)}
+.progress{height:13px;background:#344569;border-radius:20px;overflow:hidden}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#65e4ce,#a4e8ff);transition:width .4s}
+.stats{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.planet-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:12px;margin:20px 0}
+.planet-btn{background:#23365e;border:2px solid transparent;border-radius:16px;color:white;padding:15px 8px;min-height:110px}
+.planet-btn.selected{border-color:var(--accent);background:#304b72}
+.orb{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 8px;font-size:2.3rem;background:radial-gradient(circle at 30% 25%,#ffffff40,#ffffff00 65%),var(--orb,#5679ad);box-shadow:inset -12px -9px 20px #0005}
+.viewer{display:grid;grid-template-columns:125px 1fr;gap:22px;align-items:center;background:#101d3c;padding:24px;border-radius:18px;min-height:190px}
+.viewer .orb{width:110px;height:110px;font-size:4rem}
+.fact{color:var(--yellow);font-weight:800}
+.flip-area{perspective:1100px;max-width:520px;margin:24px auto}
+.flip-card{height:270px;position:relative;transform-style:preserve-3d;transition:transform .65s;cursor:pointer}
+.flip-card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border:2px solid #5b75a1;border-radius:22px;padding:25px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#284574,#172449)}
+.face.back{transform:rotateY(180deg);background:linear-gradient(135deg,#155c66,#19345b)}
+.face h3{font-size:1.6rem}
+.face p{color:white}
+.center{text-align:center}
+.drop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.dropzone{border:2px dashed #7891b6;border-radius:17px;padding:18px;min-height:175px;background:#14284a}
+.dropzone.over{border-color:var(--accent);background:#23515c}
+.chip{display:inline-block;background:#35517b;color:white;border:1px solid #6989b7;border-radius:12px;padding:10px 14px;margin:5px;font-weight:800;cursor:grab;touch-action:manipulation}
+.chip.selected{background:#5e4d22;border-color:var(--yellow)}
+.chip.correct{background:#195c52;border-color:var(--accent);cursor:default}
+.chip.wrong{border-color:var(--red)}
+.options{display:grid;gap:12px;margin-top:20px}
+.option{background:#253b65;border:2px solid #506994;color:white;border-radius:13px;padding:14px;text-align:left;font-weight:800}
+.option:hover:not(:disabled){border-color:var(--accent)}
+.option.correct{background:#17594f;border-color:var(--accent)}
+.option.wrong{background:#673044;border-color:var(--red)}
+.feedback{padding:15px;border-radius:12px;background:#293b5d;margin-top:15px}
+.hidden{display:none!important}
+.medals{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:25px 0}
+.medal{background:#273a5f;border:1px solid #5b7298;border-radius:17px;padding:20px;min-width:140px;text-align:center}
+.medal span{font-size:3rem;display:block}
+.medal.locked{opacity:.4;filter:grayscale(1)}
+footer{text-align:center;padding:25px;color:var(--muted);font-size:.85rem}
+@media(max-width:760px){
+ .layout{display:block}
+ aside{padding:10px;display:flex;gap:6px;overflow-x:auto;border-right:0}
+ aside h2{display:none}
+ .navbtn{min-width:125px;text-align:center;font-size:.83rem;padding:10px}
+ main{padding:16px}
+ .viewer{grid-template-columns:1fr;text-align:center}
+ .drop-grid{grid-template-columns:1fr}
+ .card{padding:17px}
+ header{padding:14px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand">🚀 PEPE <span>EduLab</span> | Sistema Solar</div>
+ <div class="small">Ciencias Naturales · Grado 5°</div>
+ <button class="btn secondary" id="soundBtn" aria-pressed="true">🔊 Sonido</button>
+</header>
+
+<div class="layout">
+<aside aria-label="Navegación de la lección">
+ <h2>🧭 Ruta de aprendizaje</h2>
+ <button class="navbtn active" data-page="intro">🏠 Inicio</button>
+ <button class="navbtn" data-page="learn">🌞 Explorar</button>
+ <button class="navbtn" data-page="memory">🧠 Memorizar</button>
+ <button class="navbtn" data-page="practice">🧩 Practicar</button>
+ <button class="navbtn" data-page="quiz">📝 Evaluar</button>
+ <button class="navbtn" data-page="finish">🏆 Mis logros</button>
+</aside>
+
+<main>
+<div class="stats">
+ <strong>⭐ Tu misión espacial</strong>
+ <span id="progressText" aria-live="polite">0% completado</span>
+</div>
+<div class="progress" role="progressbar" aria-label="Progreso de aprendizaje" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressRole">
+ <div id="progressBar"></div>
+</div>
+
+<section id="intro" class="active">
+ <div class="eyebrow">Misión 01 · Bienvenida</div>
+ <h1>🚀 ¡Exploradores del Sistema Solar!</h1>
+ <p>Prepárate para viajar por el espacio, conocer ocho planetas y descubrir los secretos de nuestro vecindario cósmico.</p>
+ <div class="card">
+  <h2>🎯 Objetivo de aprendizaje</h2>
+  <p>Identificar el Sistema Solar, sus principales componentes, los ocho planetas y algunas de sus características, mediante actividades interactivas.</p>
+  <div class="planet-grid" aria-label="Los ocho planetas">
+   <div class="center">☿️<br>Mercurio</div>
+   <div class="center">🟡<br>Venus</div>
+   <div class="center">🌍<br>Tierra</div>
+   <div class="center">🔴<br>Marte</div>
+   <div class="center">🟠<br>Júpiter</div>
+   <div class="center">🪐<br>Saturno</div>
+   <div class="center">🔵<br>Urano</div>
+   <div class="center">🌐<br>Neptuno</div>
+  </div>
+  <p>Completa cuatro misiones: explorar, memorizar, clasificar y responder preguntas. ¡Al final recibirás tus medallas!</p>
+  <button class="btn" data-go="learn">¡Comenzar aventura! →</button>
+ </div>
+</section>
+
+<section id="learn">
+ <div class="eyebrow">Misión 02 · Presentación del contenido</div>
+ <h1>🌞 Conoce nuestro Sistema Solar</h1>
+ <p>El Sistema Solar está formado por el Sol y los cuerpos celestes que giran a su alrededor debido a la gravedad. Selecciona cada elemento para descubrirlo.</p>
+ <div class="card">
+  <h2>Explorador de planetas</h2>
+  <div id="planetButtons" class="planet-grid"></div>
+  <div id="planetViewer" class="viewer" aria-live="polite"></div>
+  <p class="small">Las ilustraciones son representaciones didácticas; no muestran tamaños ni distancias a escala.</p>
+ </div>
+ <div class="card">
+  <h3>💡 Conceptos importantes</h3>
+  <p><strong>Estrella:</strong> cuerpo celeste que produce luz y energía, como el Sol.</p>
+  <p><strong>Planeta:</strong> cuerpo que orbita una estrella y no produce luz propia.</p>
+  <p><strong>Satélite natural:</strong> cuerpo que orbita un planeta, como la Luna.</p>
+  <p><strong>Órbita:</strong> trayectoria que sigue un cuerpo celeste alrededor de otro.</p>
+  <p><strong>Rotación:</strong> giro de un cuerpo sobre su propio eje.</p>
+  <p><strong>Traslación:</strong> movimiento de un cuerpo alrededor de otro.</p>
+  <p><strong>Otros cuerpos:</strong> asteroides, cometas y planetas enanos también forman parte del Sistema Solar.</p>
+ </div>
+ <button class="btn" id="completeLearn">He explorado el contenido →</button>
+</section>
+
+<section id="memory">
+ <div class="eyebrow">Misión 03 · Memorización y repaso activo</div>
+ <h1>🧠 Tarjetas del conocimiento</h1>
+ <p>Lee cada pregunta, intenta responder mentalmente y gira la tarjeta para comprobar tu respuesta.</p>
+ <div class="stats"><strong id="flashCounter"></strong><span id="flashMastered"></span></div>
+ <div class="flip-area">
+  <div id="flashCard" class="flip-card" role="button" tabindex="0" aria-label="Girar tarjeta">
+   <div class="face front">
+    <span class="eyebrow">Pregunta espacial</span>
+    <h3 id="flashQuestion"></h3>
+    <p>👆 Toca o haz clic para revelar</p>
+   </div>
+   <div class="face back">
+    <span class="eyebrow">Respuesta</span>
+    <h3 id="flashAnswer"></h3>
+    <p>¡Comprueba si acertaste!</p>
+   </div>
+  </div>
+ </div>
+ <div class="center">
+  <button class="btn secondary" id="prevFlash">← Anterior</button>
+  <button class="btn warning" id="flipFlash">🔄 Girar</button>
+  <button class="btn secondary" id="nextFlash">Siguiente →</button>
+ </div>
+ <div class="center">
+  <button class="btn" id="masterFlash">✅ Ya lo recuerdo</button>
+ </div>
+ <p class="center small">Marca las ocho tarjetas como recordadas para completar la misión.</p>
+</section>
+
+<section id="practice">
+ <div class="eyebrow">Misión 04 · Práctica y ejercitación</div>
+ <h1>🧩 Clasifica los cuerpos celestes</h1>
+ <p>Arrastra cada elemento a su categoría correcta. En celulares también puedes tocar un elemento y después tocar su categoría.</p>
+ <div class="card">
+  <h3>Elementos por clasificar</h3>
+  <div id="chipBank" aria-label="Elementos disponibles"></div>
+  <p id="practiceStatus" aria-live="polite">0 de 10 clasificados correctamente.</p>
+ </div>
+ <div class="drop-grid">
+  <div class="dropzone" data-category="estrella" tabindex="0" role="button" aria-label="Categoría estrella"><h3>☀️ Estrella</h3><div class="contents"></div></div>
+  <div class="dropzone" data-category="planeta" tabindex="0" role="button" aria-label="Categoría planeta"><h3>🪐 Planeta</h3><div class="contents"></div></div>
+  <div class="dropzone" data-category="satelite" tabindex="0" role="button" aria-label="Categoría satélite natural"><h3>🌙 Satélite natural</h3><div class="contents"></div></div>
+  <div class="dropzone" data-category="otro" tabindex="0" role="button" aria-label="Categoría otros cuerpos"><h3>☄️ Otros cuerpos</h3><div class="contents"></div></div>
+ </div>
+ <div id="practiceFeedback" class="feedback" role="status">Selecciona un elemento para comenzar.</div>
+ <button class="btn secondary" id="resetPractice">🔄 Reiniciar clasificación</button>
+ <button class="btn" id="toQuiz" disabled>Continuar a evaluación →</button>
+</section>
+
+<section id="quiz">
+ <div class="eyebrow">Misión 05 · Evaluación formativa</div>
+ <h1>📝 Desafío espacial</h1>
+ <p>Responde las ocho preguntas. Después de cada respuesta recibirás una explicación para seguir aprendiendo.</p>
+ <div class="card">
+  <div class="stats">
+   <strong id="quizCounter"></strong>
+   <strong id="quizScore"></strong>
+  </div>
+  <div class="progress"><div id="quizBar"></div></div>
+  <h2 id="quizQuestion"></h2>
+  <div id="quizOptions" class="options"></div>
+  <div id="quizFeedback" class="feedback hidden" role="status" aria-live="polite"></div>
+  <button class="btn hidden" id="nextQuestion">Siguiente pregunta →</button>
+ </div>
+</section>
+
+<section id="finish">
+ <div class="eyebrow">Centro de logros</div>
+ <h1>🏆 Tu aventura espacial</h1>
+ <div class="card center">
+  <div style="font-size:4rem">🚀🌟</div>
+  <h2 id="finishTitle">¡Sigue explorando!</h2>
+  <p id="finishMessage"></p>
+  <div class="medals" id="medals"></div>
+  <h3 id="finalScore"></h3>
+  <button class="btn" id="restart">🔄 Repetir aventura</button>
+  <button class="btn secondary" data-go="learn">📚 Volver a estudiar</button>
+ </div>
+</section>
+<footer>PEPE EduLab · Aprendizaje interactivo · Ciencias Naturales · 5°</footer>
+</main>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   PEPE: Motor educativo paramétrico
+   Datos, estado, navegación, interacciones y evaluación.
+   No requiere librerías JavaScript externas.
+   ============================================================ */
+
+const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+
+const planets = [
+ {name:"Sol",emoji:"☀️",color:"#ffb43b",description:"Es la estrella central del Sistema Solar. Su gravedad mantiene a los planetas en órbita.",fact:"Nos proporciona luz y calor."},
+ {name:"Mercurio",emoji:"☿️",color:"#888e9d",description:"Es el planeta más cercano al Sol y el más pequeño de los ocho planetas.",fact:"Tiene una superficie rocosa llena de cráteres."},
+ {name:"Venus",emoji:"🟡",color:"#d6a765",description:"Es el segundo planeta desde el Sol y tiene una atmósfera muy densa.",fact:"Es el planeta más caliente del Sistema Solar."},
+ {name:"Tierra",emoji:"🌍",color:"#328dd1",description:"Es nuestro hogar, el tercer planeta desde el Sol.",fact:"Tiene agua líquida en su superficie y vida conocida."},
+ {name:"Marte",emoji:"🔴",color:"#c65c43",description:"Es el cuarto planeta desde el Sol. Su suelo contiene minerales de color rojizo.",fact:"Se conoce como el planeta rojo."},
+ {name:"Júpiter",emoji:"🟠",color:"#bc885c",description:"Es el quinto planeta y el más grande del Sistema Solar.",fact:"Posee una enorme tormenta llamada Gran Mancha Roja."},
+ {name:"Saturno",emoji:"🪐",color:"#d8bd81",description:"Es el sexto planeta y un gigante gaseoso.",fact:"Sus famosos anillos contienen principalmente partículas de hielo."},
+ {name:"Urano",emoji:"🔵",color:"#77c9d7",description:"Es el séptimo planeta y un gigante helado.",fact:"Su eje de rotación está muy inclinado."},
+ {name:"Neptuno",emoji:"🌐",color:"#4770d3",description:"Es el octavo planeta y el más lejano del Sol.",fact:"Tiene vientos extremadamente rápidos."}
+];
+
+const flashcards = [
+ ["¿Qué es el Sistema Solar?","El Sol y los cuerpos celestes que orbitan a su alrededor."],
+ ["¿Cuál es la estrella central?","El Sol."],
+ ["¿Cuántos planetas hay?","Ocho planetas."],
+ ["¿Cuál es el planeta más cercano al Sol?","Mercurio."],
+ ["¿Cuál es el planeta más grande?","Júpiter."],
+ ["¿En qué planeta vivimos?","La Tierra."],
+ ["¿Qué planeta destaca por sus anillos?","Saturno."],
+ ["¿Qué es un satélite natural?","Un cuerpo celeste que orbita un planeta, como la Luna."]
+];
+
+const classification = [
+ {id:1,name:"Sol",category:"estrella"},
+ {id:2,name:"Mercurio",category:"planeta"},
+ {id:3,name:"Tierra",category:"planeta"},
+ {id:4,name:"Marte",category:"planeta"},
+ {id:5,name:"Júpiter",category:"planeta"},
+ {id:6,name:"Saturno",category:"planeta"},
+ {id:7,name:"Luna",category:"satelite"},
+ {id:8,name:"Titán",category:"satelite"},
+ {id:9,name:"Cometa",category:"otro"},
+ {id:10,name:"Asteroide",category:"otro"}
+];
+
+const questions = [
+ {q:"¿Cuál es la estrella del Sistema Solar?",options:["La Luna","El Sol","Júpiter","La Tierra"],answer:1,why:"El Sol es una estrella que emite luz y energía."},
+ {q:"¿Cuántos planetas tiene el Sistema Solar?",options:["7","9","8","10"],answer:2,why:"Actualmente se reconocen ocho planetas. Plutón se clasifica como planeta enano."},
+ {q:"¿Cuál es el tercer planeta desde el Sol?",options:["Marte","Venus","Tierra","Saturno"],answer:2,why:"El orden comienza con Mercurio, Venus y Tierra."},
+ {q:"¿Cuál es el planeta más grande?",options:["Júpiter","Mercurio","Marte","Neptuno"],answer:0,why:"Júpiter es el planeta de mayor tamaño del Sistema Solar."},
+ {q:"¿Qué planeta es conocido como el planeta rojo?",options:["Urano","Marte","Venus","Saturno"],answer:1,why:"Marte tiene un color rojizo debido a minerales ricos en hierro en su superficie."},
+ {q:"¿Qué movimiento realiza la Tierra alrededor del Sol?",options:["Rotación","Vibración","Traslación","Oscilación"],answer:2,why:"La traslación es el recorrido de la Tierra alrededor del Sol."},
+ {q:"¿Cuál es un satélite natural de la Tierra?",options:["Sol","Luna","Venus","Cometa"],answer:1,why:"La Luna es el satélite natural de nuestro planeta."},
+ {q:"¿Cuál es el planeta más lejano del Sol?",options:["Urano","Saturno","Neptuno","Mercurio"],answer:2,why:"Neptuno ocupa el octavo lugar en orden de distancia al Sol."}
+];
+
+const initialState = () => ({
+ learn:false,flash:false,practice:false,quiz:false,
+ mastered:new Set(),classified:new Set(),
+ flashIndex:0,quizIndex:0,score:0,
+ answered:false,quizFinished:false
+});
+let state = initialState();
+let selectedChip = null;
+let soundEnabled = true;
+let audioContext = null;
+
+/* Sonidos generados localmente con Web Audio API */
+function playSound(correct=true){
+ if(!soundEnabled)return;
+ try{
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;
+  if(!AudioCtx)return;
+  audioContext ||= new AudioCtx();
+  if(audioContext.state==="suspended")audioContext.resume();
+  const now=audioContext.currentTime;
+  const notes=correct?[523,659,784]:[330,220];
+  notes.forEach((frequency,i)=>{
+   const osc=audioContext.createOscillator();
+   const gain=audioContext.createGain();
+   const start=now+i*.11;
+   osc.type=correct?"sine":"triangle";
+   osc.frequency.setValueAtTime(frequency,start);
+   gain.gain.setValueAtTime(.0001,start);
+   gain.gain.exponentialRampToValueAtTime(.09,start+.015);
+   gain.gain.exponentialRampToValueAtTime(.0001,start+.17);
+   osc.connect(gain).connect(audioContext.destination);
+   osc.start(start);osc.stop(start+.18);
+  });
+ }catch(e){console.warn("Audio no disponible:",e)}
+}
+$("#soundBtn").addEventListener("click",()=>{
+ soundEnabled=!soundEnabled;
+ $("#soundBtn").textContent=soundEnabled?"🔊 Sonido":"🔇 Silencio";
+ $("#soundBtn").setAttribute("aria-pressed",String(soundEnabled));
+});
+
+function progress(){
+ const value=Math.round(
+  (Number(state.learn)+
+   state.mastered.size/flashcards.length+
+   state.classified.size/classification.length+
+   (state.quizFinished?1:state.quizIndex/questions.length))*25
+ );
+ $("#progressBar").style.width=value+"%";
+ $("#progressText").textContent=value+"% completado";
+ $("#progressRole").setAttribute("aria-valuenow",value);
+}
+
+function navigate(page){
+ $$(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ $$("main section").forEach(s=>s.classList.toggle("active",s.id===page));
+ if(page==="finish")renderFinish();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+$$("[data-page]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.page)));
+$$("[data-go]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.go)));
+
+/* 1. Visor central de contenido */
+function renderPlanets(){
+ $("#planetButtons").innerHTML="";
+ planets.forEach((p,i)=>{
+  const b=document.createElement("button");
+  b.className="planet-btn"+(i===0?" selected":"");
+  b.innerHTML=`<div class="orb" style="--orb:${p.color}">${p.emoji}</div><strong>${p.name}</strong>`;
+  b.addEventListener("click",()=>{
+   $$(".planet-btn").forEach(x=>x.classList.remove("selected"));
+   b.classList.add("selected");
+   showPlanet(i);
+  });
+  $("#planetButtons").appendChild(b);
+ });
+ showPlanet(0);
+}
+function showPlanet(index){
+ const p=planets[index];
+ $("#planetViewer").innerHTML=`
+  <div class="orb" style="--orb:${p.color}" aria-hidden="true">${p.emoji}</div>
+  <div><h2>${p.name}</h2><p>${p.description}</p><div class="fact">✨ ${p.fact}</div></div>`;
+}
+$("#completeLearn").addEventListener("click",()=>{
+ state.learn=true;progress();playSound();navigate("memory");
+});
+
+/* 2. Tarjetas 3D */
+function renderFlash(){
+ const i=state.flashIndex;
+ $("#flashCard").classList.remove("flipped");
+ $("#flashQuestion").textContent=flashcards[i][0];
+ $("#flashAnswer").textContent=flashcards[i][1];
+ $("#flashCounter").textContent=`Tarjeta ${i+1} de ${flashcards.length}`;
+ $("#flashMastered").textContent=`${state.mastered.size} recordadas`;
+ $("#masterFlash").textContent=state.mastered.has(i)?"✅ Recordada":"✅ Ya lo recuerdo";
+}
+function flip(){
+ $("#flashCard").classList.toggle("flipped");
+}
+$("#flashCard").addEventListener("click",flip);
+$("#flashCard").addEventListener("keydown",e=>{
+ if(e.key==="Enter"||e.key===" "){e.preventDefault();flip()}
+});
+$("#flipFlash").addEventListener("click",flip);
+$("#prevFlash").addEventListener("click",()=>{
+ state.flashIndex=(state.flashIndex-1+flashcards.length)%flashcards.length;
+ renderFlash();
+});
+$("#nextFlash").addEventListener("click",()=>{
+ state.flashIndex=(state.flashIndex+1)%flashcards.length;
+ renderFlash();
+});
+$("#masterFlash").addEventListener("click",()=>{
+ state.mastered.add(state.flashIndex);
+ if(state.mastered.size===flashcards.length){
+  state.flash=true;playSound();progress();
+  renderFlash();navigate("practice");
+ }else{
+  playSound();
+  const next=flashcards.findIndex((_,i)=>!state.mastered.has(i));
+  state.flashIndex=next;
+  renderFlash();progress();
+ }
+});
+
+/* 3. Clasificación: drag & drop y alternativa táctil */
+function renderClassification(){
+ $("#chipBank").innerHTML="";
+ $$(".contents").forEach(x=>x.innerHTML="");
+ classification.forEach(item=>{
+  const chip=document.createElement("button");
+  chip.className="chip";
+  chip.textContent=item.name;
+  chip.dataset.id=item.id;
+  chip.draggable=true;
+  chip.addEventListener("dragstart",e=>{
+   e.dataTransfer.setData("text/plain",String(item.id));
+   e.dataTransfer.effectAllowed="move";
+   selectedChip=item.id;
+  });
+  chip.addEventListener("click",()=>{
+   if(state.classified.has(item.id))return;
+   selectedChip=item.id;
+   $$(".chip").forEach(x=>x.classList.remove("selected"));
+   chip.classList.add("selected");
+   $("#practiceFeedback").textContent=`Seleccionaste ${item.name}. Ahora elige una categoría.`;
+  });
+  $("#chipBank").appendChild(chip);
+ });
+ updatePractice();
+}
+function classify(id,category){
+ const item=classification.find(x=>x.id===Number(id));
+ if(!item||state.classified.has(item.id))return;
+ const chip=$(`.chip[data-id="${item.id}"]`);
+ if(item.category===category){
+  state.classified.add(item.id);
+  chip.classList.remove("selected","wrong");
+  chip.classList.add("correct");
+  chip.draggable=false;
+  $(`.dropzone[data-category="${category}"] .contents`).appendChild(chip);
+  $("#practiceFeedback").textContent=`✅ ¡Correcto! ${item.name} pertenece a esa categoría.`;
+  playSound(true);
+ }else{
+  chip.classList.add("wrong");
+  $("#practiceFeedback").textContent=`💡 Revisa: ${item.name} no pertenece a esa categoría. Intenta nuevamente.`;
+  playSound(false);
+  setTimeout(()=>chip.classList.remove("wrong"),600);
+ }
+ selectedChip=null;
+ $$(".chip").forEach(x=>x.classList.remove("selected"));
+ updatePractice();
+}
+$$(".dropzone").forEach(zone=>{
+ zone.addEventListener("dragover",e=>{e.preventDefault();zone.classList.add("over")});
+ zone.addEventListener("dragleave",()=>zone.classList.remove("over"));
+ zone.addEventListener("drop",e=>{
+  e.preventDefault();zone.classList.remove("over");
+  classify(e.dataTransfer.getData("text/plain"),zone.dataset.category);
+ });
+ zone.addEventListener("click",()=>{
+  if(selectedChip!==null)classify(selectedChip,zone.dataset.category);
+ });
+ zone.addEventListener("keydown",e=>{
+  if((e.key==="Enter"||e.key===" ")&&selectedChip!==null){
+   e.preventDefault();classify(selectedChip,zone.dataset.category);
+  }
+ });
+});
+function updatePractice(){
+ const count=state.classified.size;
+ $("#practiceStatus").textContent=`${count} de ${classification.length} clasificados correctamente.`;
+ if(count===classification.length)state.practice=true;
+ $("#toQuiz").disabled=!state.practice;
+ progress();
+}
+$("#resetPractice").addEventListener("click",()=>{
+ state.classified.clear();state.practice=false;selectedChip=null;
+ renderClassification();
+ $("#practiceFeedback").textContent="Actividad reiniciada. ¡Inténtalo otra vez!";
+});
+$("#toQuiz").addEventListener("click",()=>navigate("quiz"));
+
+/* 4. Evaluación con retroalimentación inmediata */
+function renderQuiz(){
+ if(state.quizFinished){navigate("finish");return}
+ const q=questions[state.quizIndex];
+ state.answered=false;
+ $("#quizCounter").textContent=`Pregunta ${state.quizIndex+1} de ${questions.length}`;
+ $("#quizScore").textContent=`Aciertos: ${state.score}`;
+ $("#quizBar").style.width=(state.quizIndex/questions.length*100)+"%";
+ $("#quizQuestion").textContent=q.q;
+ $("#quizOptions").innerHTML="";
+ $("#quizFeedback").classList.add("hidden");
+ $("#nextQuestion").classList.add("hidden");
+ q.options.forEach((option,i)=>{
+  const b=document.createElement("button");
+  b.className="option";
+  b.textContent=`${String.fromCharCode(65+i)}. ${option}`;
+  b.addEventListener("click",()=>answerQuiz(i));
+  $("#quizOptions").appendChild(b);
+ });
+}
+function answerQuiz(index){
+ if(state.answered)return;
+ state.answered=true;
+ const q=questions[state.quizIndex];
+ const correct=index===q.answer;
+ if(correct)state.score++;
+ const buttons=$$(".option");
+ buttons.forEach((b,i)=>{
+  b.disabled=true;
+  if(i===q.answer)b.classList.add("correct");
+  if(i===index&&!correct)b.classList.add("wrong");
+ });
+ $("#quizFeedback").textContent=(correct?"✅ ¡Excelente respuesta! ":"💡 Aún puedes mejorar. ")+q.why;
+ $("#quizFeedback").classList.remove("hidden");
+ $("#quizScore").textContent=`Aciertos: ${state.score}`;
+ $("#nextQuestion").textContent=state.quizIndex===questions.length-1?"Ver mis resultados 🏆":"Siguiente pregunta →";
+ $("#nextQuestion").classList.remove("hidden");
+ playSound(correct);
+}
+$("#nextQuestion").addEventListener("click",()=>{
+ if(!state.answered)return;
+ state.quizIndex++;
+ if(state.quizIndex===questions.length){
+  state.quizFinished=true;state.quiz=true;
+  $("#quizBar").style.width="100%";
+  progress();navigate("finish");
+ }else{
+  progress();renderQuiz();
+ }
+});
+
+/* 5. Progreso, medallas y cierre */
+function renderFinish(){
+ const finished=state.learn&&state.flash&&state.practice&&state.quizFinished;
+ const percentage=Math.round(state.score/questions.length*100);
+ $("#finishTitle").textContent=finished?"🎉 ¡Misión espacial completada!":"🌟 ¡Continúa tu aventura!";
+ $("#finishMessage").textContent=finished
+  ?"Has recorrido el Sistema Solar, repasado conceptos, clasificado cuerpos celestes y completado tu evaluación."
+  :"Completa las actividades para desbloquear todas las medallas de explorador.";
+ const medals=[
+  ["🔭","Explorador",state.learn],
+  ["🧠","Memoria estelar",state.flash],
+  ["🧩","Clasificador",state.practice],
+  ["🏅","Evaluador",state.quizFinished],
+  ["🏆","Maestro espacial",finished&&percentage>=80]
+ ];
+ $("#medals").innerHTML=medals.map(([icon,name,unlocked])=>
+  `<div class="medal ${unlocked?"":"locked"}"><span>${icon}</span><strong>${name}</strong><div class="small">${unlocked?"¡Conseguida!":"Por desbloquear"}</div></div>`
+ ).join("");
+ $("#finalScore").textContent=state.quizFinished?
+  `Resultado: ${state.score} de ${questions.length} respuestas correctas (${percentage}%)`:
+  "Tu evaluación todavía está pendiente.";
+ if(state.quizFinished){
+  const message=percentage>=80
+   ?"¡Gran trabajo! Demostraste un excelente conocimiento del Sistema Solar."
+   :"¡Buen esfuerzo! Vuelve a explorar los planetas y repite la evaluación para fortalecer tus conocimientos.";
+  $("#finishMessage").textContent+=" "+message;
+ }
+}
+$("#restart").addEventListener("click",()=>{
+ state=initialState();
+ selectedChip=null;
+ renderPlanets();renderFlash();renderClassification();renderQuiz();
+ progress();navigate("intro");
+});
+
+/* Inicialización */
+renderPlanets();
+renderFlash();
+renderClassification();
+renderQuiz();
+progress();
+</script>
+</body>
+</html>
